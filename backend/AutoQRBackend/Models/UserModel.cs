@@ -11,7 +11,8 @@ public class UserModel
 
 	[FirestoreProperty] public string QrCode { get; set; }
 
-	[FirestoreProperty] public string ProfileImageUrl { get; set; }
+	[FirestoreProperty] public string? ProfileImageUrl { get; set; }
+    [FirestoreProperty] public string? DeviceToken { get; set; }
+    [FirestoreProperty] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-	[FirestoreProperty] public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

@@ -9,10 +9,12 @@ namespace AutoQRBackend.Controllers;
 public class AuthController : ControllerBase
 {
 	private readonly AuthService _authService;
+	private readonly UserService _userService;
 
-	public AuthController(AuthService authService)
+	public AuthController(AuthService authService, UserService userService)
 	{
 		_authService = authService;
+		_userService = userService;
 	}
 
 	[HttpPost("register")]
@@ -36,4 +38,32 @@ public class AuthController : ControllerBase
 
 		return Ok(new { token });
 	}
+
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var authHeader = Request.Headers["Authorization"].ToString();
+        if (!authHeader.StartsWith("Bearer "))
+            return Unauthorized();
+
+        var token = authHeader.Substring("Bearer ".Length).Trim();
+
+        var user = await _authService.GetUserFromTokenAsync(token);
+        if (user == null)
+            return NotFound();
+
+        var response = new UserProfileResponse
+        {
+            Email = user.Email,
+            Username = user.Username,
+            QrCode = user.QrCode,
+            ProfileImageUrl = user.ProfileImageUrl,
+            DeviceToken = user.DeviceToken
+        };
+
+        return Ok(response);
+    }
+
+
+
 }
