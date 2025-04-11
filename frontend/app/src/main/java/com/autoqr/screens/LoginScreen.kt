@@ -20,6 +20,9 @@ import androidx.compose.ui.unit.sp
 import com.autoqr.model.LoginRequest
 import com.autoqr.network.ApiClient
 import com.autoqr.storage.DataStoreManager
+import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -66,12 +69,23 @@ fun LoginScreen(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
-                leadingIcon = { Icon(Icons.Filled.Email, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                leadingIcon = {
+                    Icon(
+                        Icons.Filled.Email,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
                 keyboardActions = keyboardActions,
                 textStyle = MaterialTheme.typography.bodyLarge.copy(color = textColor),
-                modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 56.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                     unfocusedBorderColor = inputFieldColor,
@@ -86,18 +100,32 @@ fun LoginScreen(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
-                leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+                leadingIcon = {
+                    Icon(
+                        Icons.Filled.Lock,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                },
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Text(if (passwordVisible) "👁️" else "👁️‍🗨️", color = textColor)
+                        Text(
+                            if (passwordVisible) "👁️" else "👁️‍🗨️",
+                            color = textColor
+                        )
                     }
                 },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
                 keyboardActions = keyboardActions,
                 textStyle = MaterialTheme.typography.bodyLarge.copy(color = textColor),
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 56.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                     unfocusedBorderColor = inputFieldColor,
@@ -128,8 +156,26 @@ fun LoginScreen(
                             if (response.isSuccessful) {
                                 val token = response.body()?.token ?: ""
                                 dataStore.saveToken(token)
-                                snackbarHostState.showSnackbar("Login successful!")
+
+                                // 🟡 Obține FCM device token
+                                FirebaseMessaging.getInstance().token.addOnSuccessListener { fcmToken ->
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        try {
+                                            val deviceTokenResponse = api.updateDeviceToken(
+                                                token = "Bearer $token",
+                                                deviceToken = fcmToken
+                                            )
+                                            if (!deviceTokenResponse.isSuccessful) {
+                                                println("⚠️ Device token update failed: ${deviceTokenResponse.code()}")
+                                            }
+                                        } catch (e: Exception) {
+                                            println("⚠️ Error updating device token: ${e.message}")
+                                        }
+                                    }
+                                }
+
                                 onLoginSuccess()
+                                snackbarHostState.showSnackbar("Login successful!")
                             } else {
                                 snackbarHostState.showSnackbar("Login failed: ${response.code()}")
                             }
@@ -139,8 +185,12 @@ fun LoginScreen(
                         }
                     }
                 },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             ) {
                 Text("Login", color = ComposeColor.White)
             }

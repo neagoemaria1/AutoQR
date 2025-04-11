@@ -26,8 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.autoqr.model.RegisterRequest
 import com.autoqr.network.ApiClient
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.qrcode.QRCodeWriter
+import com.autoqr.utils.generateQrCode
 import kotlinx.coroutines.launch
 
 @Composable
@@ -240,15 +239,3 @@ fun PasswordField(
     )
 }
 
-// ---------- QR Code ----------
-fun generateQrCode(data: String): Bitmap {
-    val writer = QRCodeWriter()
-    val bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, 512, 512)
-    val bitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565)
-    for (x in 0 until 512) {
-        for (y in 0 until 512) {
-            bitmap.setPixel(x, y, if (bitMatrix[x, y]) Color.BLACK else Color.WHITE)
-        }
-    }
-    return bitmap
-}

@@ -1,11 +1,25 @@
 using AutoQRBackend.Services;
 using Microsoft.OpenApi.Models;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("https://localhost:5001");
+var credentialsPath = "autoqr-4e823-firebase-adminsdk-fbsvc-bf73ebb448.json";
+Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", credentialsPath);
 
+if (FirebaseApp.DefaultInstance == null)
+{
+    FirebaseApp.Create(new AppOptions()
+    {
+        Credential = GoogleCredential.FromFile(credentialsPath)
+    });
+}
 builder.Services.AddControllers();
 builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<FcmService>();
+
 
 builder.Services.AddCors(options =>
 {
@@ -25,10 +39,34 @@ builder.Services.AddSwaggerGen(c =>
 		Title = "AutoQR API",
 		Version = "v1"
 	});
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Introduce token-ul JWT astfel: Bearer {token}"
+    });
+
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+
 });
 
 
-Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", "autoqr-4e823-firebase-adminsdk-fbsvc-bf73ebb448.json");
 
 var app = builder.Build();
 

@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using AutoQRBackend.DTOs;
 using AutoQRBackend.Models;
+using FirebaseAdmin.Auth;
 using Google.Cloud.Firestore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -85,4 +86,30 @@ public class AuthService
 		var obj = JsonConvert.DeserializeObject<dynamic>(json);
 		return obj.idToken;
 	}
+
+    public async Task<UserModel?> GetUserFromTokenAsync(string jwt)
+    {
+        try
+        {
+            var decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(jwt);
+            var email = decodedToken.Claims["email"]?.ToString();
+
+            if (email == null)
+                return null;
+
+            var snapshot = await _firestoreDb.Collection("users")
+                .WhereEqualTo("Email", email)
+                .GetSnapshotAsync();
+
+            return snapshot.Documents.FirstOrDefault()?.ConvertTo<UserModel>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[FirebaseAuthService] Error: {ex.Message}");
+            return null;
+        }
+    }
+
+
+
 }
