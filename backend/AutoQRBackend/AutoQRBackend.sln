@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoQRBackend", "AutoQRBackend.csproj", "{99142752-6863-4010-A30A-77048A729182}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99142752-6863-4010-A30A-77048A729182}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99142752-6863-4010-A30A-77048A729182}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99142752-6863-4010-A30A-77048A729182}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99142752-6863-4010-A30A-77048A729182}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C64E2D60-5D14-4CC7-B6D3-2395BBE55AE0}
+	EndGlobalSection
+EndGlobal

@@ -18,13 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color as ComposeColor
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.autoqr.model.RegisterRequest
+import com.autoqr.network.ApiClient
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import kotlinx.coroutines.launch
@@ -33,6 +34,7 @@ import kotlinx.coroutines.launch
 fun RegisterScreen(onSwitchToLogin: () -> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     var email by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
@@ -41,34 +43,24 @@ fun RegisterScreen(onSwitchToLogin: () -> Unit) {
     var qrBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var isLoading by remember { mutableStateOf(false) }
 
-    val auth = FirebaseAuth.getInstance()
-    val firestore = FirebaseFirestore.getInstance()
-
     val keyboardController = LocalSoftwareKeyboardController.current
-    val keyboardActions = KeyboardActions(
-        onDone = { keyboardController?.hide() },
-        onNext = {  }
-    )
+    val keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
 
     val backgroundColor = MaterialTheme.colorScheme.background
     val inputFieldColor = MaterialTheme.colorScheme.outline
     val textColor = MaterialTheme.colorScheme.onSurface
-
-
     val titleStyle = MaterialTheme.typography.titleLarge.copy(
         fontSize = 28.sp,
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.primary
     )
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { padding ->
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp)
                 .padding(padding)
+                .padding(horizontal = 24.dp)
                 .background(backgroundColor),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -77,118 +69,44 @@ fun RegisterScreen(onSwitchToLogin: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Email Input Field
-            OutlinedTextField(
+            InputField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email", color = textColor) },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Email,
-                        contentDescription = "Email Icon",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                },
-                singleLine = true,
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = keyboardActions,
-                textStyle = MaterialTheme.typography.bodyLarge.copy(color = textColor),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 56.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = inputFieldColor,
-                    focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = inputFieldColor,
-                    cursorColor = MaterialTheme.colorScheme.primary
-                )
+                label = "Email",
+                icon = Icons.Filled.Email,
+                keyboardType = KeyboardType.Email,
+                textColor = textColor,
+                inputFieldColor = inputFieldColor,
+                keyboardActions = keyboardActions
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Username Input Field
-            OutlinedTextField(
+            InputField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("Username", color = textColor) },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Person,
-                        contentDescription = "Username Icon",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                },
-                singleLine = true,
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = keyboardActions,
-                textStyle = MaterialTheme.typography.bodyLarge.copy(color = textColor),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 56.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = inputFieldColor,
-                    focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = inputFieldColor,
-                    cursorColor = MaterialTheme.colorScheme.primary
-                )
+                label = "Username",
+                icon = Icons.Filled.Person,
+                keyboardType = KeyboardType.Text,
+                textColor = textColor,
+                inputFieldColor = inputFieldColor,
+                keyboardActions = keyboardActions
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Password Input Field
-            OutlinedTextField(
+            PasswordField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password", color = textColor) },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Lock,
-                        contentDescription = "Password Icon",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                },
-                singleLine = true,
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = keyboardActions,
-                textStyle = MaterialTheme.typography.bodyLarge.copy(color = textColor),
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Text(
-                            text = if (passwordVisible) "👁️" else "👁️‍🗨️",
-                            style = MaterialTheme.typography.bodyLarge.copy(color = textColor)
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 56.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = inputFieldColor,
-                    focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = inputFieldColor,
-                    cursorColor = MaterialTheme.colorScheme.primary
-                )
+                visible = passwordVisible,
+                onToggleVisibility = { passwordVisible = !passwordVisible },
+                textColor = textColor,
+                inputFieldColor = inputFieldColor,
+                keyboardActions = keyboardActions
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Buton de Register
             Button(
                 onClick = {
                     if (email.isBlank() || username.isBlank() || password.isBlank()) {
@@ -199,67 +117,28 @@ fun RegisterScreen(onSwitchToLogin: () -> Unit) {
                     }
 
                     isLoading = true
-                    firestore.collection("users")
-                        .whereEqualTo("username", username)
-                        .get()
-                        .addOnSuccessListener { result ->
-                            if (!result.isEmpty) {
-                                isLoading = false
-                                scope.launch {
-                                    snackbarHostState.showSnackbar("Username already exists!")
-                                }
-                            } else {
-                                auth.createUserWithEmailAndPassword(email, password)
-                                    .addOnSuccessListener { authResult ->
-                                        val userId = authResult.user?.uid ?: run {
-                                            scope.launch {
-                                                snackbarHostState.showSnackbar("User ID is null.")
-                                            }
-                                            isLoading = false
-                                            return@addOnSuccessListener
-                                        }
+                    scope.launch {
+                        try {
+                            val api = ApiClient.create(context)
+                            val response = api.register(
+                                RegisterRequest(email, password, username)
+                            )
 
-                                        val qrContent = "autoqr:$username"
-                                        val qr = generateQrCode(qrContent)
-                                        qrBitmap = qr
 
-                                        val userData = hashMapOf(
-                                            "username" to username,
-                                            "email" to email,
-                                            "qrCode" to qrContent
-                                        )
-
-                                        firestore.collection("users")
-                                            .document(userId)
-                                            .set(userData)
-                                            .addOnSuccessListener {
-                                                scope.launch {
-                                                    snackbarHostState.showSnackbar("Account successfully created!")
-                                                }
-                                            }
-                                            .addOnFailureListener {
-                                                scope.launch {
-                                                    snackbarHostState.showSnackbar("Failed to save user: ${it.message}")
-                                                }
-                                            }
-                                            .addOnCompleteListener {
-                                                isLoading = false
-                                            }
-                                    }
-                                    .addOnFailureListener {
-                                        isLoading = false
-                                        scope.launch {
-                                            snackbarHostState.showSnackbar("Registration failed: ${it.message}")
-                                        }
-                                    }
-                            }
-                        }
-                        .addOnFailureListener {
                             isLoading = false
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Firestore error: ${it.message}")
+
+                            if (response.isSuccessful) {
+                                val qr = generateQrCode("autoqr:$username")
+                                qrBitmap = qr
+                                snackbarHostState.showSnackbar("Account successfully created!")
+                            } else {
+                                snackbarHostState.showSnackbar("Register failed: ${response.code()}")
                             }
+                        } catch (e: Exception) {
+                            isLoading = false
+                            snackbarHostState.showSnackbar("Error: ${e.message}")
                         }
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -272,20 +151,16 @@ fun RegisterScreen(onSwitchToLogin: () -> Unit) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            if (isLoading) {
-                CircularProgressIndicator()
-            }
+            if (isLoading) CircularProgressIndicator()
 
             qrBitmap?.let {
-                Text(
-                    "Your QR Code",
-                    style = MaterialTheme.typography.titleMedium.copy(color = textColor)
-                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Your QR Code", style = MaterialTheme.typography.titleMedium.copy(color = textColor))
                 Spacer(modifier = Modifier.height(8.dp))
                 Image(bitmap = it.asImageBitmap(), contentDescription = "QR Code")
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             TextButton(onClick = { onSwitchToLogin() }) {
                 Text(
@@ -297,7 +172,75 @@ fun RegisterScreen(onSwitchToLogin: () -> Unit) {
     }
 }
 
-// Generare QR, la fel
+// ---------- Components ----------
+@Composable
+fun InputField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    keyboardType: KeyboardType,
+    textColor: ComposeColor,
+    inputFieldColor: ComposeColor,
+    keyboardActions: KeyboardActions
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label, color = textColor) },
+        leadingIcon = {
+            Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+        },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Next),
+        keyboardActions = keyboardActions,
+        textStyle = MaterialTheme.typography.bodyLarge.copy(color = textColor),
+        modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = inputFieldColor,
+            cursorColor = MaterialTheme.colorScheme.primary
+        )
+    )
+}
+
+@Composable
+fun PasswordField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    visible: Boolean,
+    onToggleVisibility: () -> Unit,
+    textColor: ComposeColor,
+    inputFieldColor: ComposeColor,
+    keyboardActions: KeyboardActions
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text("Password", color = textColor) },
+        leadingIcon = {
+            Icon(imageVector = Icons.Filled.Lock, contentDescription = "Password", tint = MaterialTheme.colorScheme.primary)
+        },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+        keyboardActions = keyboardActions,
+        textStyle = MaterialTheme.typography.bodyLarge.copy(color = textColor),
+        visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            IconButton(onClick = onToggleVisibility) {
+                Text(if (visible) "👁️" else "👁️‍🗨️", color = textColor)
+            }
+        },
+        modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = inputFieldColor,
+            cursorColor = MaterialTheme.colorScheme.primary
+        )
+    )
+}
+
+// ---------- QR Code ----------
 fun generateQrCode(data: String): Bitmap {
     val writer = QRCodeWriter()
     val bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, 512, 512)

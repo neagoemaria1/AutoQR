@@ -1,0 +1,61 @@
+# --- .NET ---
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.csproj.user
+
+# Rider / JetBrains IDE
+.idea/
+*.iml
+
+# Nu include fișierele generate de Visual Studio
+.vs/
+.vscode/
+
+# --- Android / Kotlin ---
+.gradle/
+local.properties
+.idea/
+*.iml
+*.apk
+*.ap_
+*.cxx/
+build/
+captures/
+output.json
+navigation.json
+
+# Firebase
+google-services.json
+autoqr-4e823-firebase-adminsdk-fbsvc-bf73ebb448.json
+
+# --- Sistem de operare ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- Logs ---
+*.log
+
+# --- Certificat privat local (dacă ai vreun .crt personalizat) ---
+*.crt
+*.pem
+
+# --- Alte cache-uri și lock-uri ---
+*.lock
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# --- Jetpack Compose preview cache ---
+*.preview/
+
+# --- AutoQR: exclude fișiere de configurare locală ---
+*.pdb
+*.cache
+*.vsidx
+*.vscode

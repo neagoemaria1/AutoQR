@@ -63,13 +63,11 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.1.0-alpha03")
 
     implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
-
-
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-database")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.google.firebase:firebase-messaging")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation("com.google.zxing:core:3.5.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
