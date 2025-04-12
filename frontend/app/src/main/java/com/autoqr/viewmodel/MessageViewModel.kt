@@ -28,7 +28,7 @@ class MessageViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val request = SendMessageRequest(fromUsername, toQrCode, message)
-                val response = apiService.sendMessage("Bearer $token", request)
+                val response = apiService.sendMessageToUser("Bearer $token", request)
                 onResult(response.isSuccessful)
             } catch (e: Exception) {
                 e.printStackTrace()

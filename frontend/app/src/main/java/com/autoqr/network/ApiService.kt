@@ -1,6 +1,7 @@
 package com.autoqr.network
 
 import com.autoqr.model.LoginRequest
+import com.autoqr.model.PredefinedMessagesResponse
 import com.autoqr.model.RegisterRequest
 import com.autoqr.model.SendMessageRequest
 import com.autoqr.model.TokenResponse
@@ -32,8 +33,18 @@ interface ApiService {
 
 
     @POST("api/message/send")
-    suspend fun sendMessage(
+    suspend fun sendMessageToUser(
         @Header("Authorization") token: String,
         @Body request: SendMessageRequest
     ): Response<Void>
+
+    @GET("api/message/inbox")
+    suspend fun getInboxMessages(
+        @Header("Authorization") token: String
+    ): Response<List<Map<String, Any>>>
+
+
+    @GET("api/message/predefined-messages")
+    suspend fun getPredefinedMessages(): Response<PredefinedMessagesResponse>
+
 }
