@@ -151,13 +151,20 @@ fun LoginScreen(
                             val api = ApiClient.create(context)
                             val response = api.login(LoginRequest(email, password))
 
-                            isLoading = false
-
                             if (response.isSuccessful) {
                                 val token = response.body()?.token ?: ""
                                 dataStore.saveToken(token)
 
-                                // 🟡 Obține FCM device token
+                                // 🔄 Obține username-ul cu /api/auth/me
+                                val userResponse = api.getCurrentUser("Bearer $token")
+                                if (userResponse.isSuccessful) {
+                                    val username = userResponse.body()?.username ?: ""
+                                    if (username.isNotBlank()) {
+                                        dataStore.saveUsername(username)
+                                    }
+                                }
+
+
                                 FirebaseMessaging.getInstance().token.addOnSuccessListener { fcmToken ->
                                     CoroutineScope(Dispatchers.IO).launch {
                                         try {
@@ -174,9 +181,11 @@ fun LoginScreen(
                                     }
                                 }
 
+                                isLoading = false
                                 onLoginSuccess()
                                 snackbarHostState.showSnackbar("Login successful!")
                             } else {
+                                isLoading = false
                                 snackbarHostState.showSnackbar("Login failed: ${response.code()}")
                             }
                         } catch (e: Exception) {

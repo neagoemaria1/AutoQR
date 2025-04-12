@@ -1,5 +1,6 @@
 package com.autoqr.services
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
@@ -25,6 +26,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
         }
     }
+    @SuppressLint("MissingPermission")
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         val title = remoteMessage.notification?.title ?: "FCM"
         val body = remoteMessage.notification?.body ?: "Message"
@@ -42,6 +44,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setAutoCancel(true)
             .build()
         NotificationManagerCompat.from(this).notify(id, n)
-        MessagesRepository.saveMessage("$title\n$body")
+
     }
 }

@@ -1,5 +1,7 @@
 package com.autoqr.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.WindowInsets
@@ -14,8 +16,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    navController: NavController
+) {
     val tabs = listOf("Inbox", "Scan", "Profile")
     var selectedTab by remember { mutableStateOf(0) }
 
@@ -50,12 +55,10 @@ fun HomeScreen(navController: NavController) {
             }
         }
 
+        // Ecrane pe tab
         when (selectedTab) {
             0 -> InboxScreenContent(navController = navController)
-            1 -> ScanScreenContent { scannedQrCode ->
-
-                navController.navigate("sendMessage/$scannedQrCode")
-            }
+            1 -> ScanScreenContent(navController = navController)
             2 -> ProfileScreenContent(
                 onLogout = {
                     navController.navigate("login") {

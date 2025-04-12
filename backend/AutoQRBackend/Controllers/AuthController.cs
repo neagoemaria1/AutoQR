@@ -39,30 +39,31 @@ public class AuthController : ControllerBase
 		return Ok(new { token });
 	}
 
-    [HttpGet("me")]
-    public async Task<IActionResult> GetCurrentUser()
-    {
-        var authHeader = Request.Headers["Authorization"].ToString();
-        if (!authHeader.StartsWith("Bearer "))
-            return Unauthorized();
+	[HttpGet("me")]
+	public async Task<IActionResult> GetCurrentUser()
+	{
+		var authHeader = Request.Headers["Authorization"].ToString();
+		if (!authHeader.StartsWith("Bearer "))
+			return Unauthorized();
 
-        var token = authHeader.Substring("Bearer ".Length).Trim();
+		var token = authHeader.Substring("Bearer ".Length).Trim();
 
-        var user = await _authService.GetUserFromTokenAsync(token);
-        if (user == null)
-            return NotFound();
+		var user = await _authService.GetUserFromTokenAsync(token);
+		if (user == null)
+			return NotFound();
 
-        var response = new UserProfileResponse
-        {
-            Email = user.Email,
-            Username = user.Username,
-            QrCode = user.QrCode,
-            ProfileImageUrl = user.ProfileImageUrl,
-            DeviceToken = user.DeviceToken
-        };
+		var response = new UserProfileResponse
+		{
+			Email = user.Email,
+			Username = user.Username,
+			QrCode = user.QrCode,
+			ProfileImageUrl = user.ProfileImageUrl,
+			DeviceToken = user.DeviceToken
+		};
 
-        return Ok(response);
-    }
+		return Ok(response);
+	}
+
 
 
 

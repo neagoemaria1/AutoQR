@@ -19,7 +19,7 @@ public class AuthService
 		_http = new HttpClient();
 		_apiKey = config["Firebase:ApiKey"];
 
-	
+
 		var path = "autoqr-4e823-firebase-adminsdk-fbsvc-bf73ebb448.json";
 		Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
 
@@ -87,28 +87,55 @@ public class AuthService
 		return obj.idToken;
 	}
 
-    public async Task<UserModel?> GetUserFromTokenAsync(string jwt)
-    {
-        try
-        {
-            var decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(jwt);
-            var email = decodedToken.Claims["email"]?.ToString();
+	public async Task<UserModel?> GetUserFromTokenAsync(string jwt)
+	{
+		try
+		{
+			var decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(jwt);
+			var email = decodedToken.Claims["email"]?.ToString();
 
-            if (email == null)
-                return null;
+			if (email == null)
+				return null;
 
-            var snapshot = await _firestoreDb.Collection("users")
-                .WhereEqualTo("Email", email)
-                .GetSnapshotAsync();
+			var snapshot = await _firestoreDb.Collection("users")
+				 .WhereEqualTo("Email", email)
+				 .GetSnapshotAsync();
 
-            return snapshot.Documents.FirstOrDefault()?.ConvertTo<UserModel>();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[FirebaseAuthService] Error: {ex.Message}");
-            return null;
-        }
-    }
+			return snapshot.Documents.FirstOrDefault()?.ConvertTo<UserModel>();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"[FirebaseAuthService] Error: {ex.Message}");
+			return null;
+		}
+	}
+
+	public async Task<UserModel?> GetUserWithUidFromTokenAsync(string jwt)
+	{
+		try
+		{
+			var decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(jwt);
+			var email = decodedToken.Claims["email"]?.ToString();
+
+			if (email == null)
+				return null;
+
+			var snapshot = await _firestoreDb.Collection("users")
+				 .WhereEqualTo("Email", email)
+				 .GetSnapshotAsync();
+
+			var doc = snapshot.Documents.FirstOrDefault();
+			if (doc == null) return null;
+
+			return doc.ConvertTo<UserModel>();
+		}
+		catch
+		{
+			return null;
+		}
+	}
+
+
 
 
 
