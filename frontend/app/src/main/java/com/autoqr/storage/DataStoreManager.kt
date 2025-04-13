@@ -1,7 +1,6 @@
 package com.autoqr.storage
 
 import android.content.Context
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -35,10 +34,23 @@ class DataStoreManager(private val context: Context) {
         context.dataStore.edit { it.remove(USERNAME_KEY) }
     }
 
+
+    private fun profileImagePathKeyForUser(username: String) = stringPreferencesKey("profile_image_path_$username")
+    suspend fun saveProfileImagePathForUser(username: String, path: String) {
+        context.dataStore.edit { it[profileImagePathKeyForUser(username)] = path }
+    }
+    fun getProfileImagePathForUser(username: String): Flow<String?> =
+        context.dataStore.data.map { it[profileImagePathKeyForUser(username)] }
+
+    suspend fun clearProfileImagePathForUser(username: String) {
+        context.dataStore.edit { it.remove(profileImagePathKeyForUser(username)) }
+    }
+
     suspend fun clearAll() {
         context.dataStore.edit {
             it.remove(TOKEN_KEY)
             it.remove(USERNAME_KEY)
+
         }
     }
 }

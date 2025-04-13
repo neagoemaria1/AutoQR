@@ -1,42 +1,52 @@
-package com.autoqr.ui.theme
+package com.autoqr.ui.Color
 
 import androidx.compose.ui.graphics.Color
 
-val Blue80 = Color(0xFF80C7E2)
-val Green80 = Color(0xFFA1D6B8)
-val Teal80 = Color(0xFF80CBC4)
 
-val Blue40 = Color(0xFF005B7F)
-val Green40 = Color(0xFF4C9C72)
-val Teal40 = Color(0xFF00796B)
-
-val LightGray = Color(0xFFF0F0F0)
-val DarkGray = Color(0xFF2E2E2E)
+val Black = Color(0xFF0B0B0B)
+val DarkSurface = Color(0xFF1A1A1A)
+val MediumSurface = Color(0xFF2E2E2E)
+val LightSurface = Color(0xFF3F3F3F)
 val White = Color(0xFFFFFFFF)
-val Black = Color(0xFF000000)
+val LightGray = Color(0xFFE0E0E0)
+val MediumGray = Color(0xFF9E9E9E)
+val DarkGray = Color(0xFF424242)
 
-val ErrorColor = Color(0xFFB00020)
-val AccentColor = Color(0xFF03DAC5)
 
-val SuccessColor = Color(0xFF4CAF50)
-val WarningColor = Color(0xFFFF9800)
-val InfoColor = Color(0xFF2196F3)
-
-val PrimaryTextColor = Color(0xFF212121)
-val SecondaryTextColor = Color(0xFF757575)
-val DisabledTextColor = Color(0xFFBDBDBD)
-
-val BackgroundColor = Color(0xFFFAF9FB)
-val SurfaceColor = Color(0xFFFFFFFF)
-
-val ButtonColor = Color(0xFF3B8D99)
-val ButtonTextColor = Color(0xFFFFFFFF)
-
-val LightBlue = Color(0xFF39A0ED)
-val DeepOrange = Color(0xFFFF5722)
-val VibrantYellow = Color(0xFFFFEB3B)
-val PinkRed = Color(0xFFE91E63)
-val PurpleViolet = Color(0xFF9C27B0)
-val Coral = Color(0xFFFF6F61)
-val LimeGreen = Color(0xFFCDDC39)
 val ElectricBlue = Color(0xFF00B0FF)
+val AquaBlue = Color(0xFF40C4FF)
+val SkyBlue = Color(0xFF81D4FA)
+val IndigoBlue = Color(0xFF3F51B5)
+
+val LimeGreen = Color(0xFF76FF03)
+val Emerald = Color(0xFF00C853)
+val MintGreen = Color(0xFF69F0AE)
+
+val SunnyYellow = Color(0xFFFFEB3B)
+val Amber = Color(0xFFFFC107)
+val Gold = Color(0xFFFFD700)
+
+val CoralRed = Color(0xFFFF6F61)
+val FlameOrange = Color(0xFFFF5722)
+
+val VioletPurple = Color(0xFF9C27B0)
+val DeepPurple = Color(0xFF673AB7)
+
+val MagentaPink = Color(0xFFE91E63)
+val SoftPink = Color(0xFFF8BBD0)
+
+
+val ErrorRed = Color(0xFFD32F2F)
+val WarningOrange = Color(0xFFFFA000)
+val SuccessGreen = Color(0xFF00C853)
+val InfoBlue = Color(0xFF0288D1)
+
+
+val Teal = Color(0xFF009688)
+val Cyan = Color(0xFF00ACC1)
+val Peach = Color(0xFFFFAB91)
+val IceBlue = Color(0xFFB3E5FC)
+val OceanBlue = Color(0xFF01579B)
+val ForestGreen = Color(0xFF1B5E20)
+val NeonGreen = Color(0xFF00FF00)
+val SoftLavender = Color(0xFFE1BEE7)

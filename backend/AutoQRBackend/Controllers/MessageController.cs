@@ -38,7 +38,7 @@ namespace AutoQRBackend.Controllers
 				request.Body,
 				user.Uid,
 				request.MessageType ?? "alert",
-				request.ReplyToMessage
+				request.ReplyTo
 			);
 
 			if (success)
@@ -102,6 +102,21 @@ namespace AutoQRBackend.Controllers
 		}
 
 
-	}
+
+        [HttpPost("mark-as-read")]
+        public async Task<IActionResult> MarkMessageAsRead([FromHeader(Name = "Authorization")] string authorization,[FromBody] string messageBody)
+        {
+            var token = authorization.Replace("Bearer ", "").Trim();
+            var user = await _authService.GetUserWithUidFromTokenAsync(token);
+
+            if (user == null || string.IsNullOrEmpty(user.Uid))
+                return Unauthorized(new { message = "Invalid or expired token." });
+
+            var result = await _userService.MarkMessageAsReadAsync(user.Uid, messageBody);
+            return result ? Ok() : NotFound(new { message = "Message not found" });
+        }
+
+
+    }
 
 }
