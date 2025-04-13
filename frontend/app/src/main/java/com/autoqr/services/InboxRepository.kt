@@ -5,8 +5,10 @@ import com.autoqr.model.InboxMessage
 import com.autoqr.network.ApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 
 class InboxRepository(private val context: Context) {
+
     suspend fun fetchInboxMessages(token: String): List<InboxMessage> = withContext(Dispatchers.IO) {
         try {
             val response = ApiClient.create(context).getInboxMessages("Bearer $token")
@@ -22,7 +24,8 @@ class InboxRepository(private val context: Context) {
                             message = item["message"]?.toString().orEmpty(),
                             timestamp = seconds,
                             messageType = item["messageType"]?.toString() ?: "alert",
-                            isRead = item["isRead"] as? Boolean ?: false
+                            isRead = item["isRead"] as? Boolean ?: false,
+                            replyTo = item["replyTo"]?.toString().orEmpty()
                         )
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -34,5 +37,16 @@ class InboxRepository(private val context: Context) {
             e.printStackTrace()
         }
         return@withContext emptyList()
+    }
+
+    suspend fun markMessageAsRead(token: String, messageBody: String): Boolean = withContext(Dispatchers.IO) {
+        return@withContext try {
+            val api = ApiClient.create(context)
+            val response: Response<Void> = api.markMessageAsRead("Bearer $token", messageBody)
+            response.isSuccessful
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 }

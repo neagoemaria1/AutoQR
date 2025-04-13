@@ -74,6 +74,23 @@ namespace AutoQRBackend.Services
 			return messages;
 		}
 
+        public async Task<bool> MarkMessageAsReadAsync(string uid, string messageBody)
+        {
+            var inboxRef = _firestoreDb.Collection("users").Document(uid).Collection("inbox");
+            var query = inboxRef.WhereEqualTo("message", messageBody);
+            var snapshot = await query.GetSnapshotAsync();
 
-	}
+            if (snapshot.Count == 0) return false;
+
+            foreach (var doc in snapshot.Documents)
+            {
+                await doc.Reference.UpdateAsync("isRead", true);
+            }
+
+            return true;
+        }
+
+
+
+    }
 }

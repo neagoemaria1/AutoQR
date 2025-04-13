@@ -59,16 +59,35 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation("androidx.compose.material3:material3:1.1.0-alpha03")
-    implementation("androidx.compose.ui:ui:1.1.0-alpha03")
-    implementation("androidx.compose.foundation:foundation:1.1.0-alpha03")
+    implementation("androidx.compose.material3:material3:1.2.0")
+    implementation("androidx.compose.ui:ui:1.6.0")
+    implementation("androidx.compose.foundation:foundation:1.6.0")
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+
+    implementation("androidx.compose.material:material-icons-core:1.6.0")
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
+
+    // Accompanist
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.31.5-beta")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.31.5-beta")
+    implementation("com.google.accompanist:accompanist-placeholder-material:0.31.5-beta")
+    implementation("com.google.accompanist:accompanist-permissions:0.31.5-beta")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.31.5-beta")
+
+
+
+    implementation("com.airbnb.android:lottie-compose:6.1.0")
+
+    implementation("androidx.compose.animation:animation:1.6.0")
+    implementation("androidx.compose.animation:animation-graphics:1.6.0")
+
     implementation("androidx.activity:activity-compose:1.8.0")
 
     implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
 
     implementation ("com.google.firebase:firebase-messaging:23.1.2")
     implementation ("com.google.firebase:firebase-analytics:21.2.0")
-
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")

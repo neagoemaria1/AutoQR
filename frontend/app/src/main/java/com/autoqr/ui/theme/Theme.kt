@@ -5,31 +5,36 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.autoqr.ui.Color.*
 
-// Dark theme colors
 private val DarkColorScheme = darkColorScheme(
-    primary = Blue40,
-    secondary = Green40,
-    tertiary = Teal40,
-    background = DarkGray,
-    surface = Black,
-    onPrimary = White,
-    onSecondary = White,
+    primary = ElectricBlue,
+    onPrimary = Black,
+    secondary = LimeGreen,
+    onSecondary = Black,
+    tertiary = VioletPurple,
+    onTertiary = Black,
+    background = Black,
     onBackground = White,
-    onSurface = White
+    surface = DarkSurface,
+    onSurface = White,
+    error = ErrorRed,
+    onError = Black
 )
 
-// Light theme colors
 private val LightColorScheme = lightColorScheme(
-    primary = Blue80,
-    secondary = Green80,
-    tertiary = Teal80,
+    primary = ElectricBlue,
+    onPrimary = White,
+    secondary = LimeGreen,
+    onSecondary = Black,
+    tertiary = VioletPurple,
+    onTertiary = White,
     background = LightGray,
-    surface = White,
-    onPrimary = DarkGray,
-    onSecondary = DarkGray,
     onBackground = DarkGray,
-    onSurface = DarkGray
+    surface = White,
+    onSurface = DarkGray,
+    error = ErrorRed,
+    onError = White
 )
 
 @Composable

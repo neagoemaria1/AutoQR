@@ -47,4 +47,11 @@ interface ApiService {
     @GET("api/message/predefined-messages")
     suspend fun getPredefinedMessages(): Response<PredefinedMessagesResponse>
 
+    @POST("api/message/mark-as-read")
+    suspend fun markMessageAsRead(
+        @Header("Authorization") token: String,
+        @Body messageBody: String
+    ): Response<Void>
+
+
 }
