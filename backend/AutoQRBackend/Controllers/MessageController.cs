@@ -83,8 +83,8 @@ namespace AutoQRBackend.Controllers
 
 					"Your alarm is going off.",
 			  },
-				
-					Replies = new List<string>
+
+				Replies = new List<string>
 			  {
 					"Thanks, I’m on my way!",
 
@@ -103,20 +103,40 @@ namespace AutoQRBackend.Controllers
 
 
 
-        [HttpPost("mark-as-read")]
-        public async Task<IActionResult> MarkMessageAsRead([FromHeader(Name = "Authorization")] string authorization,[FromBody] string messageBody)
-        {
-            var token = authorization.Replace("Bearer ", "").Trim();
-            var user = await _authService.GetUserWithUidFromTokenAsync(token);
+		[HttpPost("mark-as-read")]
+		public async Task<IActionResult> MarkMessageAsRead([FromHeader(Name = "Authorization")] string authorization, [FromBody] string messageBody)
+		{
+			var token = authorization.Replace("Bearer ", "").Trim();
+			var user = await _authService.GetUserWithUidFromTokenAsync(token);
 
-            if (user == null || string.IsNullOrEmpty(user.Uid))
-                return Unauthorized(new { message = "Invalid or expired token." });
+			if (user == null || string.IsNullOrEmpty(user.Uid))
+				return Unauthorized(new { message = "Invalid or expired token." });
 
-            var result = await _userService.MarkMessageAsReadAsync(user.Uid, messageBody);
-            return result ? Ok() : NotFound(new { message = "Message not found" });
-        }
+			var result = await _userService.MarkMessageAsReadAsync(user.Uid, messageBody);
+			return result ? Ok() : NotFound(new { message = "Message not found" });
+		}
 
 
-    }
+		[HttpDelete("inbox/{messageId}")]
+		public async Task<IActionResult> DeleteInboxMessage([FromHeader(Name = "Authorization")] string authorization, string messageId)
+		{
+			var token = authorization.Replace("Bearer ", "").Trim();
+			var user = await _authService.GetUserWithUidFromTokenAsync(token);
+
+			if (user == null || string.IsNullOrEmpty(user.Uid))
+				return Unauthorized(new { message = "Invalid or expired token." });
+
+			var success = await _userService.DeleteInboxMessageAsync(user.Uid, messageId);
+
+			if (!success)
+				return NotFound(new { message = "Message not found or could not be deleted." });
+
+			return Ok(new { message = "Message deleted successfully." });
+		}
+
+
+
+
+	}
 
 }

@@ -20,24 +20,37 @@ import com.google.firebase.FirebaseApp
 import java.net.URLDecoder
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var cameraPermissionLauncher: androidx.activity.result.ActivityResultLauncher<String>
+    private lateinit var notificationPermissionLauncher: androidx.activity.result.ActivityResultLauncher<String>
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
 
-        // ✅ Notificări - cerere permisiune
+
+        cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            Log.d("MainActivity", "Camera permisă: $granted")
+        }
+
+        notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            Log.d("MainActivity", "Notificări permise: $granted")
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val permission = Manifest.permission.POST_NOTIFICATIONS
-            val isGranted = ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
-            if (!isGranted) {
-                val launcher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-                    Log.d("MainActivity", "Notificări permise: $granted")
-                }
-                launcher.launch(permission)
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(permission)
             }
         }
 
-        // ✅ UI
         setContent {
             AutoQRTheme {
                 AutoQRApp()
@@ -45,6 +58,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

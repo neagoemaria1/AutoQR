@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using AutoQRBackend.Models;
 using Microsoft.Extensions.Configuration;
+using Google.Cloud.Firestore.V1;
 
 namespace AutoQRBackend.Services
 {
@@ -72,6 +73,7 @@ namespace AutoQRBackend.Services
 			}
 
 			var docRef = _firestoreDb.Collection("messages").Document();
+			messageData["id"] = docRef.Id;
 			await docRef.SetAsync(messageData);
 
 
@@ -95,7 +97,7 @@ namespace AutoQRBackend.Services
 			}
 			return false;
 		}
-
+	
 
 	}
 }

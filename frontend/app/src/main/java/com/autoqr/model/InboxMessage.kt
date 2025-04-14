@@ -1,6 +1,7 @@
 package com.autoqr.model
 
 data class InboxMessage(
+    val id: String = "",
     val fromUsername: String,
     val toUsername: String,
     val message: String,
