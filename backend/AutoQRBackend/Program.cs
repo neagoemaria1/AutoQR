@@ -4,7 +4,7 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("https://localhost:5001");
+
 var credentialsPath = "autoqr-4e823-firebase-adminsdk-fbsvc-bf73ebb448.json";
 Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", credentialsPath);
 

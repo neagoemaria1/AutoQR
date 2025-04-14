@@ -19,6 +19,7 @@ class InboxRepository(private val context: Context) {
                         val seconds = (timestampMap?.get("seconds") as? Number)?.toLong() ?: 0L
 
                         InboxMessage(
+                            id = item["id"]?.toString().orEmpty(),
                             fromUsername = item["fromUsername"]?.toString().orEmpty(),
                             toUsername = item["toUsername"]?.toString().orEmpty(),
                             message = item["message"]?.toString().orEmpty(),
@@ -49,4 +50,17 @@ class InboxRepository(private val context: Context) {
             false
         }
     }
+    suspend fun deleteMessage(token: String, messageId: String): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val response = ApiClient.create(context).deleteInboxMessage("Bearer $token", messageId)
+            return@withContext response.isSuccessful
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+
+
+
 }

@@ -2,6 +2,7 @@ package com.autoqr.network
 
 import android.content.Context
 import com.autoqr.R
+import com.autoqr.utils.NetworkUtils
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -13,7 +14,9 @@ import javax.net.ssl.X509TrustManager
 
 object ApiClient {
 
-    private const val BASE_URL = "https://10.0.2.2:5001/"
+  // private const val BASE_URL = "https://10.0.2.2:5001/"
+
+    private val BASE_URL = "https://192.168.1.135:5001"
 
     private fun getSecureOkHttpClient(context: Context): OkHttpClient {
         val certificateFactory = CertificateFactory.getInstance("X.509")

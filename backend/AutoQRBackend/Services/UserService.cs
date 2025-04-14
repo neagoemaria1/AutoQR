@@ -90,7 +90,32 @@ namespace AutoQRBackend.Services
             return true;
         }
 
+		public async Task<bool> DeleteInboxMessageAsync(string uid, string messageId)
+		{
+			try
+			{
+				var inboxRef = _firestoreDb
+					 .Collection("users")
+					 .Document(uid)
+					 .Collection("inbox")
+					 .Document(messageId);
+
+				var snapshot = await inboxRef.GetSnapshotAsync();
+
+				if (!snapshot.Exists)
+					return false;
+
+				await inboxRef.DeleteAsync();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Delete error: {ex.Message}");
+				return false;
+			}
+		}
 
 
-    }
+
+	}
 }

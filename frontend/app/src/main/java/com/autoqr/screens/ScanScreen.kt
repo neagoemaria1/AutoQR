@@ -15,8 +15,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.QrCode
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -221,15 +220,15 @@ fun ScanScreenContent(navController: NavController) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                imageVector = Icons.Default.CameraAlt,
+                                imageVector = if (cameraStarted) Icons.Default.Check else Icons.Default.CameraAlt,
                                 contentDescription = null,
                                 tint = Color.White,
                                 modifier = Modifier.size(22.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = if (cameraStarted) "Camera Running" else "Start Camera",
-                                fontSize = 15.sp,
+                                text = if (cameraStarted) "Active" else "Start",
+                                fontSize = 14.sp,
                                 color = Color.White
                             )
                         }
@@ -266,26 +265,32 @@ fun ScanScreenContent(navController: NavController) {
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 if (cameraStarted) {
-                    Box(
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color(0xFF505050))
-                            .clickable {
-                                cameraProvider?.unbindAll()
-                                cameraStarted = false
-                            },
-                        contentAlignment = Alignment.Center
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(
-                            text = "Stop Camera",
-                            fontSize = 15.sp,
-                            color = Color.White,
-                            modifier = Modifier.padding(vertical = 14.dp)
-                        )
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color(0xFF505050))
+                                .clickable {
+                                    cameraProvider?.unbindAll()
+                                    cameraStarted = false
+                                }
+                                .padding(horizontal = 24.dp, vertical = 14.dp)
+                        ) {
+                            Text(
+                                text = "Stop Camera",
+                                fontSize = 15.sp,
+                                color = Color.White
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
+
             }
         }
     }

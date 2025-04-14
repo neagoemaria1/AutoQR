@@ -26,9 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.autoqr.model.LoginRequest
 import com.autoqr.network.ApiClient
 import com.autoqr.storage.DataStoreManager
-import com.autoqr.ui.Color.AquaBlue
-import com.autoqr.ui.Color.ElectricBlue
-import com.autoqr.ui.Color.White
+import com.autoqr.ui.Color.*
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
